@@ -1,7 +1,7 @@
 from os.path import getsize, join
 
-from tree.common import TreePathInfo
-from tree.formatters.formatter import Formatter
+from .common import TreePathInfo
+from .formatter import Formatter
 
 
 class Sizes(Formatter):

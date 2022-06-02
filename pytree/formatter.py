@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from tree.common import TreePathInfo
+from .common import TreePathInfo
 
 
 class Formatter(ABC):

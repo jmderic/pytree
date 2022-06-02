@@ -9,15 +9,15 @@ import os
 from pathlib import PurePath
 from typing import List
 
-from common import TreePathInfo
-from formatters.formatter import Formatter
-from formatters.icons import Icons
-from formatters.sizes import Sizes
-from tree.formatters.fonts import Font
+from .common import TreePathInfo
+from .formatter import Formatter
+from .icons import Icons
+from .sizes import Sizes
+from .fonts import Font
 
 TAB:str = "    "
-ELEM_MIDDLE: str = "├──"
-ELEM_LAST: str = "└──"
+ELEM_MIDDLE: str = "├── "
+ELEM_LAST: str = "└── "
 PARENT_MIDDLE: str = "│   "
 
 # Prefix Rules
@@ -39,6 +39,8 @@ def walk_and_print(path: PurePath = PurePath('.'),
     depthCount:list[int] = []
     def get_parents_prefix():
         return "".join(PARENT_MIDDLE if x>0 else TAB for x in depthCount[:-1]) if len(depthCount) > 1 else ""
+    dir_count = 0
+    files_count = 0
     # traverse root directory, and list directories as dirs and files as files
     for root, dirs, files in os.walk(path):
         if not print_files:
@@ -52,6 +54,8 @@ def walk_and_print(path: PurePath = PurePath('.'),
         for f in found:
             files.remove(f)
 
+        dir_count+= len(dirs)
+        files_count+= len(files)
 
         #  Build the full string formatted string including the tree hierarchy
         dir_name = os.path.basename(root)
@@ -68,7 +72,6 @@ def walk_and_print(path: PurePath = PurePath('.'),
             depthCount[-1] -= 1
         while len(depthCount) > 0 and depthCount[-1] == 0 and (len(dirs)+len(files)==0):
             depthCount.pop()
-
         # Update stack with the n. of immediate children of this folder
         depthCount.append(len(dirs)+len(files))
         # Print files of current folder
@@ -85,6 +88,7 @@ def walk_and_print(path: PurePath = PurePath('.'),
         # Adjust depth stack
         while len(depthCount)>0 and depthCount[-1] == 0:
             depthCount.pop()
+    print(f"\n{dir_count} directories, {files_count} files")
 
 
 if __name__ == "__main__":

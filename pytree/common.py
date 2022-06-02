@@ -40,6 +40,6 @@ class TreePathInfo:
 
     def __str__(self) -> str:
         size = f" [{self.size}]" if self.size  else ""
-        return (self.icon +' '
+        return (self.icon + (' ' if self.icon != "" else '')
                 + self._formatted_name
                 + size)
