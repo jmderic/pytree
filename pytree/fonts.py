@@ -34,21 +34,21 @@ class Decorator(Enum):
 class Font(Formatter):
     """Font color and weight formatter"""
     file_text_col: TColor  = TColor.WHITE
-    file_back_col: BGColor = BGColor.BLACK
+    file_back_col: BGColor = BGColor.RESET
     dir_text_col : TColor  = TColor.GREEN
-    dir_back_col : BGColor = BGColor.BLACK
+    dir_back_col : BGColor = BGColor.RESET
 
     def format(self, tpi:TreePathInfo):
         if tpi.is_file:
             tpi.formatted_name = (
                 self.file_back_col.value
                 + self.file_text_col.value
-                + Decorator.Bold.value
                 + tpi.name
                 + TColor.RESET.value)
         else:
             tpi.formatted_name = (
                 self.dir_back_col.value
+                + Decorator.Bold.value
                 + self.dir_text_col.value
                 + tpi.name
                 + TColor.RESET.value
