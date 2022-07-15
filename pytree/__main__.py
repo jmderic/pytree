@@ -90,8 +90,7 @@ def walk_and_print(path: PurePath = PurePath('.'),
             depthCount.pop()
     print(f"\n{dir_count} directories, {files_count} files")
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=str, help="Path to print (defaults to current)", nargs='?', default=os.getcwd())
     parser.add_argument("-d", "--dir", help="Only show directories", action="store_true")
@@ -122,3 +121,6 @@ if __name__ == "__main__":
         filter_criteria = filter_criteria,
         formatters = formatters,
         )
+
+if __name__ == "__main__":
+    main()

@@ -1,7 +1,7 @@
 # pytree
-Simplified clone of the Linux ```tree```.
+Simplified clone of the Linux ```tree``` command.
 
-Supports displaying directory tree structure with colored output, icons, filesizes, filtered views and more.
+Supports displaying directory tree structure with colored output, icons, filesizes, filtered views and more. This utility prints as it scans the directories and can be interrupted anytime by pressing CTRL+C.
 ### Example output
 ```
 $ python -m pytree -is
@@ -25,10 +25,14 @@ $ python -m pytree -is
 ```
 
 ## Installation
-Clone this repository
+### From PYPI
+```
+pip install tree-print
+```
+### From source
 ```
 git clone https://github.com/maxcurzi/pytree.git
-python -m pip install pytree
+python -m pip install -e pytree
 ```
 Test if it works
 ```
