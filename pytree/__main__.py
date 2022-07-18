@@ -1,5 +1,5 @@
-# main.py
 #!/usr/bin/env python3
+# main.py
 """Utility to list content of directories in a tree-like format. Analog to the *NIX 'tree' command.
 """
 
@@ -90,7 +90,7 @@ def walk_and_print(path: PurePath = PurePath('.'),
             depthCount.pop()
     print(f"\n{dir_count} directories, {files_count} files")
 
-def main():
+def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=str, help="Path to print (defaults to current)", nargs='?', default=os.getcwd())
     parser.add_argument("-d", "--dir", help="Only show directories", action="store_true")
@@ -100,7 +100,12 @@ def main():
     parser.add_argument("-i", "--icons", help="Display icons", action="store_true")
     parser.add_argument("-c", "--color", help="Color output", action="store_true")
     parser.add_argument("-s", "--size", help="Show the file size", action="store_true")
-    args = parser.parse_args()
+    return parser.parse_args(args)
+
+
+def main(sys_args):
+
+    args = parse_args(sys_args)
 
     # Process arguments
     path = PurePath(args.path)
@@ -123,4 +128,4 @@ def main():
         )
 
 if __name__ == "__main__":
-    main()
+    main(os.sys.argv[1:])
