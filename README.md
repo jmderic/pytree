@@ -1,5 +1,5 @@
 # pytree
-Simplified clone of the Linux ```tree``` command.
+Simplified clone of the Unix's ```tree``` command.
 
 Supports displaying directory tree structure with colored output, icons, filesizes, filtered views and more. This utility prints as it scans the directories and can be interrupted anytime by pressing CTRL+C.
 ### Example output
