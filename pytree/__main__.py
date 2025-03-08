@@ -26,6 +26,9 @@ PARENT_MIDDLE: str = "│   "
 # 3. Push/pop from prefix stack when changing level
 # 4. Push PARENT_MIDDLE if the current folder isn't last
 
+# Correct the above:
+# 1. write files and folders intermixed in lowercased lexcal order (like 'nix 'tree')
+
 def walk_and_print(path: PurePath = PurePath('.'),
                    print_files: bool = True,
                    filter_criteria: str = "",
@@ -37,6 +40,7 @@ def walk_and_print(path: PurePath = PurePath('.'),
     # terminators.
 
     depthCount:list[int] = []
+    depthState = []
     def get_parents_prefix():
         return "".join(PARENT_MIDDLE if x>0 else TAB for x in depthCount[:-1]) if len(depthCount) > 1 else ""
     dir_count = 0
@@ -57,6 +61,12 @@ def walk_and_print(path: PurePath = PurePath('.'),
         dir_count+= len(dirs)
         files_count+= len(files)
 
+        dir_tuples = [ (x, "D") for x in dirs ]
+        file_tuples = [ (x, "F") for x in files ]
+        item_tuples = sorted(dir_tuples + file_tuples, key=(lambda x : str.lower(x[0])))
+        print(f"{item_tuples=}")
+        dirs = sorted(dirs, key=str.lower)
+        files = sorted(files, key=str.lower)
         #  Build the full string formatted string including the tree hierarchy
         dir_name = os.path.basename(root)
         t_dir = TreePathInfo(root=root, name=dir_name, is_file=False)
