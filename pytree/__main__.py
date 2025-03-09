@@ -6,7 +6,7 @@
 import argparse
 import fnmatch
 import os
-from pathlib import PurePath
+from pathlib import PurePath, Path
 from typing import List
 
 from .common import TreePathInfo
@@ -25,9 +25,6 @@ PARENT_MIDDLE: str = "│   "
 # 2. Current level prefix is not added to the stack, just selected as needed
 # 3. Push/pop from prefix stack when changing level
 # 4. Push PARENT_MIDDLE if the current folder isn't last
-
-# Correct the above:
-# 1. write files and folders intermixed in lowercased lexcal order (like 'nix 'tree')
 
 def walk_and_print(path: PurePath = PurePath('.'),
                    print_files: bool = True,
@@ -100,6 +97,51 @@ def walk_and_print(path: PurePath = PurePath('.'),
             depthCount.pop()
     print(f"\n{dir_count} directories, {files_count} files")
 
+# Correct the above:
+# 1. write files and folders intermixed in lowercased lexcal order (like 'nix 'tree')
+
+class TreePrinter:
+    def __init__(self, top_path, filter_criteria):
+        self.top_path = top_path
+        self.filter_criteria = filter_criteria
+
+    def render(self):
+        dir_data = { "Path": self.top_path, "Prefix": "" }
+        self.render_dir(dir_data)
+
+    def render_dir(self, dir_data):
+        my_dir = dir_data["Path"]
+        my_prefix = dir_data["Prefix"]
+        print(my_prefix + my_dir.name)
+        entry_tuples = []
+        for entry in my_dir.iterdir():
+            ename = entry.name
+            if fnmatch.fnmatch(ename, self.filter_criteria):
+                continue
+            if entry.is_symlink():
+                print(f"Unrecorded path: {entry=}; symlinks not printed")
+            elif entry.is_file():
+                entry_tuples.append((ename, "F"))
+            elif entry.is_dir():
+                entry_tuples.append((ename, "D"))
+            else:
+                print(f"Unrecorded path: {entry=}; stat type not printed")
+        entry_tuples = sorted(entry_tuples, key=(lambda x : str.lower(x[0])))
+        last_idx = len(entry_tuples) - 1
+        for idx, entry_tuple in enumerate(entry_tuples):
+            file_prefix = my_prefix + ELEM_MIDDLE
+            subdir_prefix = my_prefix + PARENT_MIDDLE
+            nodename = (my_dir / entry_tuple[0]).name
+            if idx == last_idx:
+                file_prefix = my_prefix + ELEM_LAST
+                subdir_prefix = my_prefix + TAB
+            if entry_tuple[1] == "F":
+                print(file_prefix + nodename)
+            else: # directory
+                dir_data = { "Path": my_dir / nodename, "Prefix": subdir_prefix }
+                self.render_dir(dir_data)
+
+
 def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=str, help="Path to print (defaults to current)", nargs='?', default=os.getcwd())
@@ -136,6 +178,11 @@ def main(sys_args):
         filter_criteria = filter_criteria,
         formatters = formatters,
         )
+
+    print("\n\nRenderDir:\n\n")
+    top_path = Path(path)
+    tp = TreePrinter(top_path, filter_criteria)
+    tp.render()
 
 if __name__ == "__main__":
     main(os.sys.argv[1:])
